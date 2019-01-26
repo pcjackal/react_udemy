@@ -6,10 +6,12 @@ import axios from 'axios'
 import { URL } from '../../../config'
 import style from './newsList.css'
 import Button from '../Button/button'
+import CardInfo from '../CardInfo/cardInfo';
 
 export default class NewsList extends Component {
 
     state = {
+        teams: [],
         items: [],
         start: this.props.start,
         end: this.props.start + this.props.amount,
@@ -17,16 +19,28 @@ export default class NewsList extends Component {
     }
 
     componentWillMount = () => {
-      this.request(this.state.start, this.state.end);
+        this.request(this.state.start, this.state.end);
     }
 
     request = (start, end) => {
+
+        if(this.state.teams.length < 1) {
+            axios.get(`${URL}/teams`)
+            .then( response => {
+                this.setState({
+                    teams: response.data
+                })
+            })
+        }
+
         axios.get(`${URL}/articles?_start=${start}&_end=${end}`)
         .then( response => {
-          this.setState({
-              items: [...this.state.items, ...response.data]
-          })
-      })
+            this.setState({
+                items: [...this.state.items, ...response.data],
+                start,
+                end
+            })
+        })
     }
 
     loadMore = () => {
@@ -53,13 +67,18 @@ export default class NewsList extends Component {
                         <div>
                             <div className={style.newslist_item}>
                                 <Link to={`/articles/${item.id}`}>
+                                    <CardInfo 
+                                        teams={this.state.teams} 
+                                        team_id={item.team}
+                                        date={item.date}
+                                    />
                                     <h2>{item.title}</h2>
                                 </Link>
                             </div>
                         </div>
                     </CSSTransition>
                 ));
-                break
+                break;
             default:
                 template = null;
         }
@@ -68,7 +87,7 @@ export default class NewsList extends Component {
     }
     
     render() {
-        console.log(this.state.items)
+        console.log(this.state.teams[1])
         return (
             <div>
                 <div dangerouslySetInnerHTML={{__html: "<!-- some comment -->"}} />

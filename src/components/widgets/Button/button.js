@@ -1,5 +1,6 @@
 import React from 'react'
 import style from './button.css'
+import {Link} from 'react-router-dom'
 
 const Button = (props) => {
 
@@ -12,6 +13,15 @@ const Button = (props) => {
                     {props.text}
                 </div>
             );
+            break;
+
+        case 'linkTo':
+            template = (
+                <Link to={props.linkTo}
+                    className={style.loadmore_btn}>
+                    {props.text}
+                </Link>
+            )
             break;
     
         default:
