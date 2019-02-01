@@ -6,7 +6,12 @@ import style from './style.css'
 const CardInfo = (props) => {
 
     const getTeamName = (teams, team_id) => {
-      return teams[team_id].name
+      let data = teams.find((item)=>{
+        return item.id === team_id
+      });
+      if(data){
+          return data.name
+      }
     }
     
 
